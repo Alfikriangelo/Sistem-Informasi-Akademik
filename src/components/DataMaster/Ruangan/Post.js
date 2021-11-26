@@ -9,15 +9,9 @@ import {
 } from 'react-native';
 
 export default function Post({navigation}) {
-  const [ruangan, setRuangan] = useState({
-    ruangan: '',
-  });
+  const [valueRuangan, setValueRuangan] = useState('');
 
   const [loading, setLoading] = useState(false);
-
-  const onChangeRuangan = value => {
-    setRuangan({...ruangan, ruangan: value});
-  };
 
   const displayAlert = () => {
     Alert.alert(
@@ -32,6 +26,19 @@ export default function Post({navigation}) {
     );
   };
 
+  const validation = () => {
+    if (valueRuangan !== '') {
+      saveData();
+    } else {
+      Alert.alert('Ada Data Yang Belum Diisi', 'Silahkan Diperbaiki', [
+        {
+          text: 'OK',
+          onPress: () => console.log('OK'),
+        },
+      ]);
+    }
+  };
+
   const saveData = () => {
     setLoading(true);
     var myHeaders = new Headers();
@@ -40,7 +47,7 @@ export default function Post({navigation}) {
       method: 'POST',
       headers: myHeaders,
       body: JSON.stringify({
-        ruangan: ruangan.ruangan,
+        ruangan: valueRuangan,
       }),
     })
       .then(response => {
@@ -68,13 +75,15 @@ export default function Post({navigation}) {
       </Text>
 
       <TextInput
+        keyboardType="number-pad"
         placeholder={'130'}
+        value={valueRuangan}
         placeholderTextColor="#999999"
-        onChangeText={value => onChangeRuangan(value)}
+        onChangeText={value => setValueRuangan(value.trim())}
         style={styles.input}
       />
 
-      <TouchableOpacity onPress={saveData}>
+      <TouchableOpacity onPress={validation}>
         <View
           style={{
             backgroundColor: '#5665D2',

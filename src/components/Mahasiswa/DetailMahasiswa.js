@@ -52,6 +52,8 @@ const DetailMahasiswa = ({navigation, route}) => {
     jenisKelamin: item.jenisKelamin,
   });
 
+  console.log(kehadiran.id_programStudi);
+
   const apiProvinsi = useCallback(async () => {
     const apiURL = 'https://dev.farizdotid.com/api/daerahindonesia/provinsi';
 
@@ -218,7 +220,7 @@ const DetailMahasiswa = ({navigation, route}) => {
   const onChangeNik = value => {
     setKehadiran({...kehadiran, nik: value});
   };
-  onChangeNoTelp = value => {
+  const onChangeNoTelp = value => {
     setKehadiran({...kehadiran, noTelp: value});
   };
   const onChangeKodePos = value => {
@@ -227,14 +229,40 @@ const DetailMahasiswa = ({navigation, route}) => {
   const onChangeKodePosOrtu = value => {
     setKehadiran({...kehadiran, kodeposOrtu: value});
   };
+  const onChangeEmail = value => {
+    setKehadiran({...kehadiran, email: value});
+  };
+
+  const validation = () => {
+    if (
+      gender &&
+      valueKelas &&
+      value &&
+      valueProvinsi &&
+      valueKecamatan &&
+      valueKota &&
+      valueProvinsiOrtu &&
+      valueKotaOrtu &&
+      valueKecamatanOrtu !== ''
+    ) {
+      UpdateData();
+    } else {
+      Alert.alert('Ada Data Yang Belum Diisi', 'Silahkan Diperbaiki', [
+        {
+          text: 'OK',
+          onPress: () => console.log('OK'),
+        },
+      ]);
+    }
+  };
 
   const UpdateData = () => {
     const dataProgramStudi = data.filter(item =>
       value.includes(item.nama_prodi),
     );
-    const dataKelass = dataKelas.filter(item => {
-      valueKelas ? valueKelas.includes(item.kelas) : null;
-    });
+    const dataKelass = dataKelas.filter(item =>
+      valueKelas.includes(item.kelas),
+    );
 
     const dataProvinsii = dataProvinsi.filter(
       item => valueProvinsi === item.id,
@@ -272,7 +300,8 @@ const DetailMahasiswa = ({navigation, route}) => {
           noTelp: kehadiran.noTelp,
           alamat: kehadiran.alamat,
           alamatOrtu: kehadiran.alamatOrtu,
-          kodePosMhs: kehadiran.kodePosMhs,
+          kodeposMhs: kehadiran.kodeposMhs,
+          kodeposOrtu: kehadiran.kodeposOrtu,
           provinsiMhs: dataProvinsii.length > 0 ? dataProvinsii[0].nama : '',
           kabupatenMhs: dataKotaa.length > 0 ? dataKotaa[0].nama : '',
           kecamatanMhs: dataKecamatann.length > 0 ? dataKecamatann[0].nama : '',
@@ -405,7 +434,7 @@ const DetailMahasiswa = ({navigation, route}) => {
 
         <View
           style={{
-            backgroundColor: '#5665d2',
+            backgroundColor: 'grey',
             marginHorizontal: 10,
             borderRadius: 10,
             marginVertical: 10,
@@ -415,11 +444,7 @@ const DetailMahasiswa = ({navigation, route}) => {
             ref={pickerRef}
             selectedValue={gender}
             onValueChange={(itemValue, itemIndex) => setGender(itemValue)}>
-            <Picker.Item
-              color="grey"
-              label="Jenis Kelamin"
-              value="Jenis Kelamin"
-            />
+            <Picker.Item label="Jenis Kelamin" value="" />
             <Picker.Item label="Laki-Laki" value="Laki-Laki" />
             <Picker.Item label="Perempuan" value="Perempuan" />
           </Picker>
@@ -442,7 +467,7 @@ const DetailMahasiswa = ({navigation, route}) => {
 
             <View
               style={{
-                backgroundColor: '#5665d2',
+                backgroundColor: 'grey',
                 marginHorizontal: 10,
                 borderRadius: 10,
                 marginVertical: 10,
@@ -454,7 +479,7 @@ const DetailMahasiswa = ({navigation, route}) => {
                 onValueChange={(itemValue, itemIndex) =>
                   setValueKelas(itemValue)
                 }>
-                <Picker.Item color="grey" label="Kelas" value=" - " />
+                <Picker.Item label="Kelas" value="" />
                 {dataKelas.map(item => (
                   <Picker.Item label={item.kelas} value={item.kelas} />
                 ))}
@@ -473,7 +498,7 @@ const DetailMahasiswa = ({navigation, route}) => {
             </Text>
             <View
               style={{
-                backgroundColor: '#5665d2',
+                backgroundColor: 'grey',
                 marginHorizontal: 10,
                 borderRadius: 10,
                 marginVertical: 10,
@@ -483,7 +508,7 @@ const DetailMahasiswa = ({navigation, route}) => {
                 ref={pickerRef}
                 selectedValue={value}
                 onValueChange={(itemValue, itemIndex) => setValue(itemValue)}>
-                <Picker.Item color="grey" label="Program Studi" value=" - " />
+                <Picker.Item label="Program Studi" value="" />
                 {data.map(item => (
                   <Picker.Item
                     label={item.nama_prodi}
@@ -543,14 +568,14 @@ const DetailMahasiswa = ({navigation, route}) => {
                 marginHorizontal: 10,
                 borderRadius: 10,
                 marginVertical: 10,
-                backgroundColor: '#5665d2',
+                backgroundColor: 'grey',
               }}>
               <Picker
                 mode="dropdown"
                 ref={pickerRef}
                 selectedValue={valueProvinsi}
                 onValueChange={value => handleChangeProvinsi(value)}>
-                <Picker.Item color="grey" label="Provinsi" value=" - " />
+                <Picker.Item label="Provinsi" value="" />
                 {dataProvinsi.map(item => (
                   <Picker.Item label={item.nama} value={item.id} />
                 ))}
@@ -560,7 +585,7 @@ const DetailMahasiswa = ({navigation, route}) => {
           <View style={{width: '50%'}}>
             <View
               style={{
-                backgroundColor: '#5665d2',
+                backgroundColor: 'grey',
                 marginHorizontal: 10,
                 borderRadius: 10,
                 marginVertical: 10,
@@ -570,7 +595,7 @@ const DetailMahasiswa = ({navigation, route}) => {
                 ref={pickerRef}
                 selectedValue={valueKota}
                 onValueChange={value => handleChangeKota(value)}>
-                <Picker.Item color="grey" label="Kota" value=" - " />
+                <Picker.Item label="Kota" value="" />
                 {dataKota.map(item => (
                   <Picker.Item label={item.nama} value={item.id} />
                 ))}
@@ -582,7 +607,7 @@ const DetailMahasiswa = ({navigation, route}) => {
           <View style={{width: '50%'}}>
             <View
               style={{
-                backgroundColor: '#5665d2',
+                backgroundColor: 'grey',
                 marginHorizontal: 10,
                 borderRadius: 10,
                 marginVertical: 10,
@@ -592,7 +617,7 @@ const DetailMahasiswa = ({navigation, route}) => {
                 ref={pickerRef}
                 selectedValue={valueKecamatan}
                 onValueChange={value => handleChangeKecamatan(value)}>
-                <Picker.Item color="grey" label="Kecamatan" value=" - " />
+                <Picker.Item label="Kecamatan" value="" />
                 {dataKecamatan.map(item => (
                   <Picker.Item label={item.nama} value={item.id} />
                 ))}
@@ -646,7 +671,7 @@ const DetailMahasiswa = ({navigation, route}) => {
           <View style={{width: '50%'}}>
             <View
               style={{
-                backgroundColor: '#5665d2',
+                backgroundColor: 'grey',
                 marginHorizontal: 10,
                 borderRadius: 10,
                 marginVertical: 10,
@@ -656,7 +681,7 @@ const DetailMahasiswa = ({navigation, route}) => {
                 ref={pickerRef}
                 selectedValue={valueProvinsiOrtu}
                 onValueChange={value => handleChangeProvinsiOrtu(value)}>
-                <Picker.Item label=" - " value=" - " />
+                <Picker.Item label="Provinsi" value="" />
                 {dataProvinsiOrtu.map(item => (
                   <Picker.Item label={item.nama} value={item.id} />
                 ))}
@@ -666,7 +691,7 @@ const DetailMahasiswa = ({navigation, route}) => {
           <View style={{width: '50%'}}>
             <View
               style={{
-                backgroundColor: '#5665d2',
+                backgroundColor: 'grey',
                 marginHorizontal: 10,
                 borderRadius: 10,
                 marginVertical: 10,
@@ -676,7 +701,7 @@ const DetailMahasiswa = ({navigation, route}) => {
                 ref={pickerRef}
                 selectedValue={valueKotaOrtu}
                 onValueChange={value => handleChangeKotaOrtu(value)}>
-                <Picker.Item label=" - " value=" - " />
+                <Picker.Item label="Kota" value="" />
                 {dataKotaOrtu.map(item => (
                   <Picker.Item label={item.nama} value={item.id} />
                 ))}
@@ -688,7 +713,7 @@ const DetailMahasiswa = ({navigation, route}) => {
           <View style={{width: '50%'}}>
             <View
               style={{
-                backgroundColor: '#5665d2',
+                backgroundColor: 'grey',
                 marginHorizontal: 10,
                 borderRadius: 10,
                 marginVertical: 10,
@@ -698,7 +723,7 @@ const DetailMahasiswa = ({navigation, route}) => {
                 ref={pickerRef}
                 selectedValue={valueKecamatanOrtu}
                 onValueChange={value => handleChangeKecamatanOrtu(value)}>
-                <Picker.Item label=" - " value=" - " />
+                <Picker.Item label="Kecamatan" value="" />
                 {dataKecamatanOrtu.map(item => (
                   <Picker.Item label={item.nama} value={item.id} />
                 ))}
@@ -729,7 +754,7 @@ const DetailMahasiswa = ({navigation, route}) => {
             justifyContent: 'flex-end',
             marginTop: 10,
           }}>
-          <TouchableOpacity style={styles.updateButton} onPress={UpdateData}>
+          <TouchableOpacity style={styles.updateButton} onPress={validation}>
             <View style={{padding: 10}}>
               <Text style={{color: 'white', textAlign: 'center'}}>
                 Perbarui

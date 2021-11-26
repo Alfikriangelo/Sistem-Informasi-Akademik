@@ -70,6 +70,18 @@ const DetailKelas = ({route, navigation}) => {
     );
   };
 
+  const validation = () => {
+    if (kelas.kelas !== '') {
+      updateData();
+    } else {
+      Alert.alert('Ada Data Yang Belum Diisi', 'Silahkan Diperbaiki', [
+        {
+          text: 'OK',
+          onPress: () => console.log('OK'),
+        },
+      ]);
+    }
+  };
   const updateData = () => {
     const matkul = data.filter(item => newValue.includes(item.matkul));
     var myHeaders = new Headers();
@@ -118,7 +130,7 @@ const DetailKelas = ({route, navigation}) => {
       <TextInput
         placeholder={'Kelas'}
         placeholderTextColor="#999999"
-        onChangeText={value => onChangeKelas(value)}
+        onChangeText={value => onChangeKelas(value.trim())}
         style={styles.input}
         value={kelas.kelas}
       />
@@ -127,7 +139,6 @@ const DetailKelas = ({route, navigation}) => {
           style={{
             fontSize: 20,
             fontWeight: 'bold',
-
             color: 'black',
           }}>
           Mata Kuliah
@@ -139,7 +150,7 @@ const DetailKelas = ({route, navigation}) => {
           max={5}
           open={open}
           setOpen={setOpen}
-          placeholder="Algoritma dan Pemrograman Dasar"
+          placeholder={kelas.matkul + ''}
           textStyle={{
             fontSize: 15,
             opacity: 0.4,
@@ -150,7 +161,7 @@ const DetailKelas = ({route, navigation}) => {
             label: item.matkul,
             value: item.matkul,
           }))}
-          defaultValue={item.matkul}
+          defaultValue={kelas.matkul}
           translation={{
             SELECTED_ITEMS_COUNT_TEXT: '{count} Mata Kuliah Yang Dipilih',
           }}
@@ -165,7 +176,7 @@ const DetailKelas = ({route, navigation}) => {
           justifyContent: 'flex-end',
           marginTop: 10,
         }}>
-        <TouchableOpacity onPress={updateData} style={styles.updateButton}>
+        <TouchableOpacity onPress={validation} style={styles.updateButton}>
           <View style={{padding: 10}}>
             <Text style={{color: 'white', textAlign: 'center'}}>Perbarui</Text>
           </View>

@@ -45,6 +45,19 @@ const Detail = ({route, navigation}) => {
     );
   };
 
+  const validation = () => {
+    if (ruangan.ruangan !== '') {
+      updateData();
+    } else {
+      Alert.alert('Ada Data Yang Belum Diisi', 'Silahkan Diperbaiki', [
+        {
+          text: 'OK',
+          onPress: () => console.log('OK'),
+        },
+      ]);
+    }
+  };
+
   const updateData = () => {
     var myHeaders = new Headers();
 
@@ -99,8 +112,9 @@ const Detail = ({route, navigation}) => {
     <View style={styles.container}>
       <Text style={styles.text}>Ruangan</Text>
       <TextInput
+        keyboardType="number-pad"
         placeholder={'Ruang Kelas'}
-        onChangeText={value => onChangeRuangan(value)}
+        onChangeText={value => onChangeRuangan(value.trim())}
         placeholderTextColor="#999999"
         style={styles.input}
         value={ruangan.ruangan}
@@ -111,7 +125,7 @@ const Detail = ({route, navigation}) => {
           justifyContent: 'flex-end',
           marginTop: 10,
         }}>
-        <TouchableOpacity onPress={updateData} style={styles.updateButton}>
+        <TouchableOpacity onPress={validation} style={styles.updateButton}>
           <View style={{padding: 10}}>
             <Text style={{color: 'white', textAlign: 'center'}}>Perbarui</Text>
           </View>
@@ -162,5 +176,4 @@ const styles = StyleSheet.create({
   },
 });
 
-//make this component available to the app
 export default Detail;

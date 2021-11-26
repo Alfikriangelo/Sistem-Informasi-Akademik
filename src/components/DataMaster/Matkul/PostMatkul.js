@@ -9,10 +9,8 @@ import {
 } from 'react-native';
 
 function PostMatkul({navigation}) {
-  const [matkul, setMatkul] = useState({
-    kode: '',
-    matkul: '',
-  });
+  const [valueKodeMatkul, setKodeValueMatkul] = useState('');
+  const [valueMatkul, setValueMatkul] = useState('');
 
   const displayAlert = () => {
     Alert.alert(
@@ -29,12 +27,17 @@ function PostMatkul({navigation}) {
 
   const [loading, setLoading] = useState(false);
 
-  const onChangeMatkul = value => {
-    setMatkul({...matkul, matkul: value});
-  };
-
-  const onChangeKode = value => {
-    setMatkul({...matkul, kode: value});
+  const validation = () => {
+    if (valueKodeMatkul && valueMatkul !== '') {
+      saveData();
+    } else {
+      Alert.alert('Ada Data Yang Belum Diisi', 'Silahkan Diperbaiki', [
+        {
+          text: 'OK',
+          onPress: () => console.log('OK'),
+        },
+      ]);
+    }
   };
 
   const saveData = () => {
@@ -45,8 +48,8 @@ function PostMatkul({navigation}) {
       method: 'POST',
       headers: myHeaders,
       body: JSON.stringify({
-        kode: matkul.kode,
-        matkul: matkul.matkul,
+        kode: valueKodeMatkul,
+        matkul: valueMatkul,
       }),
     })
       .then(response => {
@@ -74,8 +77,12 @@ function PostMatkul({navigation}) {
       </Text>
       <TextInput
         placeholder={'SI401'}
+        autoCapitalize="characters"
+        value={valueKodeMatkul}
         placeholderTextColor="#999999"
-        onChangeText={value => onChangeKode(value)}
+        onChangeText={value => {
+          setKodeValueMatkul(value.trim());
+        }}
         style={styles.input}
       />
       <Text
@@ -90,10 +97,11 @@ function PostMatkul({navigation}) {
       <TextInput
         placeholder={'Algoritma dan Pemrograman'}
         placeholderTextColor="#999999"
-        onChangeText={value => onChangeMatkul(value)}
+        onChangeText={value => setValueMatkul(value.trim())}
         style={styles.input}
+        value={valueMatkul}
       />
-      <TouchableOpacity onPress={saveData}>
+      <TouchableOpacity onPress={validation}>
         <View
           style={{
             backgroundColor: '#5665d2',

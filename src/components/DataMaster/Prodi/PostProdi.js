@@ -9,14 +9,8 @@ import {
 } from 'react-native';
 
 function PostProdi({navigation}) {
-  const [prodi, setProdi] = useState({
-    nama_prodi: '',
-  });
+  const [valueProdi, setValueProdi] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const onChangeProdi = value => {
-    setProdi({...prodi, nama_prodi: value});
-  };
 
   const displayAlert = () => {
     Alert.alert(
@@ -31,6 +25,19 @@ function PostProdi({navigation}) {
     );
   };
 
+  const validation = () => {
+    if (valueProdi !== '') {
+      saveData();
+    } else {
+      Alert.alert('Ada Data Yang Belum Diisi', 'Silahkan Diperbaiki', [
+        {
+          text: 'OK',
+          onPress: () => console.log('OK'),
+        },
+      ]);
+    }
+  };
+
   const saveData = () => {
     setLoading(true);
     var myHeaders = new Headers();
@@ -39,7 +46,7 @@ function PostProdi({navigation}) {
       method: 'POST',
       headers: myHeaders,
       body: JSON.stringify({
-        nama_prodi: prodi.nama_prodi,
+        nama_prodi: valueProdi,
       }),
     })
       .then(response => {
@@ -65,12 +72,13 @@ function PostProdi({navigation}) {
         Prodi
       </Text>
       <TextInput
+        value={valueProdi}
         placeholderTextColor="#999999"
         placeholder={'D4 - TEKNIK INFORMATIKA'}
-        onChangeText={value => onChangeProdi(value)}
+        onChangeText={value => setValueProdi(value.trim())}
         style={styles.input}
       />
-      <TouchableOpacity onPress={saveData}>
+      <TouchableOpacity onPress={validation}>
         <View
           style={{
             backgroundColor: '#5665d2',

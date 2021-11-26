@@ -44,6 +44,19 @@ const DetailProdi = ({route, navigation}) => {
     );
   };
 
+  const validation = () => {
+    if (prodi.nama_prodi !== '') {
+      updateData();
+    } else {
+      Alert.alert('Ada Data Yang Belum Diisi', 'Silahkan Diperbaiki', [
+        {
+          text: 'OK',
+          onPress: () => console.log('OK'),
+        },
+      ]);
+    }
+  };
+
   const updateData = () => {
     var myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -90,7 +103,7 @@ const DetailProdi = ({route, navigation}) => {
       <TextInput
         placeholder={'Prodi'}
         placeholderTextColor="#999999"
-        onChangeText={value => onChangeProdi(value)}
+        onChangeText={value => onChangeProdi(value.trim())}
         style={styles.input}
         value={prodi.nama_prodi}
       />
@@ -100,7 +113,7 @@ const DetailProdi = ({route, navigation}) => {
           justifyContent: 'flex-end',
           marginTop: 10,
         }}>
-        <TouchableOpacity onPress={updateData} style={styles.updateButton}>
+        <TouchableOpacity onPress={validation} style={styles.updateButton}>
           <View style={{padding: 10}}>
             <Text style={{color: 'white', textAlign: 'center'}}>Perbarui</Text>
           </View>

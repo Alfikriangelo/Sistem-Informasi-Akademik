@@ -16,14 +16,8 @@ const PostKelas = ({navigation}) => {
 
   const [data, setData] = useState([]);
 
-  const [kelas, setKelas] = useState({
-    kelas: '',
-  });
+  const [valueKelas, setValueKelas] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const onChangeKelas = value => {
-    setKelas({...kelas, kelas: value});
-  };
 
   const displayAlert = () => {
     Alert.alert(
@@ -54,6 +48,19 @@ const PostKelas = ({navigation}) => {
     getApiMatkul();
   }, []);
 
+  const validation = () => {
+    if (valueKelas !== '') {
+      saveData();
+    } else {
+      Alert.alert('Ada Data Yang Belum Diisi', 'Silahkan Diperbaiki', [
+        {
+          text: 'OK',
+          onPress: () => console.log('OK'),
+        },
+      ]);
+    }
+  };
+
   const saveData = () => {
     const matkul = data.filter(item => value.includes(item.matkul));
     console.log(matkul);
@@ -64,7 +71,7 @@ const PostKelas = ({navigation}) => {
       method: 'POST',
       headers: myHeaders,
       body: JSON.stringify({
-        kelas: kelas.kelas,
+        kelas: valueKelas,
         id_matakuliah: matkul,
       }),
     })
@@ -93,9 +100,10 @@ const PostKelas = ({navigation}) => {
         Kelas
       </Text>
       <TextInput
+        value={valueKelas}
         placeholder={'3 SI A'}
         placeholderTextColor="#999999"
-        onChangeText={value => onChangeKelas(value)}
+        onChangeText={value => setValueKelas(value.trim())}
         style={styles.input}
       />
       <Text
@@ -129,10 +137,9 @@ const PostKelas = ({navigation}) => {
           placeholder="Algoritma dan Pemrograman Dasar"
           setValue={setValue}
           items={data.map(item => ({label: item.matkul, value: item.matkul}))}
-          defaultValue={data}
         />
       </View>
-      <TouchableOpacity onPress={saveData}>
+      <TouchableOpacity onPress={validation}>
         <View
           style={{
             backgroundColor: '#5665D2',

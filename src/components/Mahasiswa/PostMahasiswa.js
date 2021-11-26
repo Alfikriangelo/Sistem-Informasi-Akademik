@@ -20,9 +20,9 @@ import {Avatar} from 'react-native-paper';
 const PostMahasiswa = ({navigation}) => {
   const [gender, setGender] = useState();
   const [pic, setPic] = useState('');
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState('');
   const [data, setData] = useState([]);
-  const [valueKelas, setValueKelas] = useState(null);
+  const [valueKelas, setValueKelas] = useState('');
   const [dataKelas, setDataKelas] = useState([]);
   const [dataProvinsi, setDataProvinsi] = useState([]);
   const [valueProvinsi, setValueProvinsi] = useState('');
@@ -39,10 +39,19 @@ const PostMahasiswa = ({navigation}) => {
   const [valueKecamatanOrtu, setValueKecamatanOrtu] = useState('');
   const [dataKelurahanOrtu, setDataKelurahanOrtu] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [valueName, setValueName] = useState('');
+  const [valueNim, setValueNim] = useState('');
+  const [valueNik, setValueNik] = useState('');
+  const [valueEmail, setValueEmail] = useState('');
+  const [valueKodePos, setValueKodePos] = useState('');
+  const [valueAlamat, setValueAlamat] = useState('');
+  const [valueKodePosOrtu, setValueKodePosOrtu] = useState('');
+  const [valueAlamatOrtu, setValueAlamatOrtu] = useState('');
+  const [valueNotelp, setValueNoTelp] = useState('');
+
   const [kehadiran, setKehadiran] = useState({
     nim: '',
     nama: '',
-    email: '',
     alamat: '',
     id_programStudi: '',
     noTelp: '',
@@ -54,7 +63,7 @@ const PostMahasiswa = ({navigation}) => {
     kodePosMhs: '',
   });
 
-  console.log(pic);
+  console.log(valueKelas);
 
   const setToastMsg = msg => {
     ToastAndroid.showWithGravity(msg, ToastAndroid.SHORT, ToastAndroid.CENTER);
@@ -248,31 +257,6 @@ const PostMahasiswa = ({navigation}) => {
       });
   };
 
-  const onChangeNim = value => {
-    setKehadiran({...kehadiran, nim: value});
-  };
-  const onChangeNama = value => {
-    setKehadiran({...kehadiran, nama: value});
-  };
-  const onChangeNik = value => {
-    setKehadiran({...kehadiran, nik: value});
-  };
-  const onChangeEmail = value => {
-    setKehadiran({...kehadiran, email: value});
-  };
-  const onChangeAlamat = value => {
-    setKehadiran({...kehadiran, alamat: value});
-  };
-  const onChangeAlamatOrtu = value => {
-    setKehadiran({...kehadiran, alamatOrtu: value});
-  };
-  const onChangeKodePos = value => {
-    setKehadiran({...kehadiran, kodePosMhs: value});
-  };
-  const onChangeNoTelp = value => {
-    setKehadiran({...kehadiran, noTelp: value});
-  };
-
   const displayAlert = () => {
     Alert.alert('Nim Sudah Pernah Digunakan', 'Silahkan Diperbaiki', [
       {
@@ -282,13 +266,56 @@ const PostMahasiswa = ({navigation}) => {
     ]);
   };
 
+  const validation = () => {
+    if (
+      (gender &&
+        valueKelas &&
+        value &&
+        valueProvinsi &&
+        valueKecamatan &&
+        valueKota &&
+        valueProvinsiOrtu &&
+        valueKotaOrtu &&
+        valueKecamatanOrtu &&
+        valueName &&
+        valueNim &&
+        valueNik &&
+        valueEmail &&
+        valueKodePos &&
+        valueAlamatOrtu &&
+        valueAlamat &&
+        valueKodePos &&
+        valueKodePosOrtu &&
+        valueNotelp) !== ''
+    ) {
+      if (!/\S+@\S+\.\S+/.test(valueEmail)) {
+        Alert.alert('Email Tidak Valid', 'Silahkan Diperbaiki', [
+          {
+            text: 'OK',
+            onPress: () => console.log('OK'),
+          },
+        ]);
+      } else {
+        saveData();
+      }
+    } else {
+      Alert.alert('Ada Data Yang Belum Diisi', 'Silahkan Diperbaiki', [
+        {
+          text: 'OK',
+          onPress: () => console.log('OK'),
+        },
+      ]);
+    }
+  };
+
   const saveData = () => {
     const dataProgramStudi = data.filter(item =>
       value.includes(item.nama_prodi),
     );
-    const dataKelass = dataKelas.filter(item => {
-      valueKelas ? valueKelas.includes(item.kelas) : null;
-    });
+
+    const dataKelass = dataKelas.filter(item =>
+      valueKelas.includes(item.kelas),
+    );
 
     const dataProvinsii = dataProvinsi.filter(
       item => valueProvinsi === item.id,
@@ -328,18 +355,18 @@ const PostMahasiswa = ({navigation}) => {
       },
       // body: form,
       body: JSON.stringify({
-        nim: kehadiran.nim,
-        nik: kehadiran.nik,
-        nama: kehadiran.nama,
+        nim: valueNim,
+        nik: valueNik,
+        nama: valueName,
         jenisKelamin: gender,
         id_programStudi: dataProgramStudi,
         id_kelas: dataKelass,
-        email: kehadiran.email,
-        alamat: kehadiran.alamat,
-        noTelp: kehadiran.noTelp,
-        alamat: kehadiran.alamat,
-        alamatOrtu: kehadiran.alamatOrtu,
-        kodePosMhs: kehadiran.kodePosMhs,
+        email: valueEmail,
+        alamat: valueAlamat,
+        noTelp: valueNotelp,
+        alamatOrtu: valueAlamatOrtu,
+        kodeposMhs: valueKodePos,
+        kodeposOrtu: valueKodePosOrtu,
         provinsiMhs: dataProvinsii.length > 0 ? dataProvinsii[0].nama : '',
         kabupatenMhs: dataKotaa.length > 0 ? dataKotaa[0].nama : '',
         kecamatanMhs: dataKecamatann.length > 0 ? dataKecamatann[0].nama : '',
@@ -388,7 +415,7 @@ const PostMahasiswa = ({navigation}) => {
             underlayColor="rgba(0,0,0,0)">
             <Avatar.Image
               size={250}
-              style={{backgroundColor: '#5665d2'}}
+              style={{backgroundColor: 'grey'}}
               source={{uri: 'data:image/png;base64, ' + pic}}
             />
           </TouchableHighlight>
@@ -421,9 +448,11 @@ const PostMahasiswa = ({navigation}) => {
           NIM
         </Text>
         <TextInput
+          keyboardType="number-pad"
           placeholderTextColor="#999999"
           placeholder={'2138977'}
-          onChangeText={value => onChangeNim(value)}
+          value={valueNim}
+          onChangeText={value => setValueNim(value)}
           style={styles.input}
         />
 
@@ -437,9 +466,10 @@ const PostMahasiswa = ({navigation}) => {
           Nama
         </Text>
         <TextInput
+          value={valueName}
           placeholderTextColor="#999999"
           placeholder={'Alfikri'}
-          onChangeText={value => onChangeNama(value)}
+          onChangeText={value => setValueName(value)}
           style={styles.input}
         />
         <Text
@@ -456,16 +486,16 @@ const PostMahasiswa = ({navigation}) => {
             marginHorizontal: 10,
             borderRadius: 10,
             marginVertical: 10,
-            backgroundColor: '#5665D2',
+            backgroundColor: 'grey',
           }}>
           <Picker
             mode="dropdown"
             ref={pickerRef}
             selectedValue={gender}
             onValueChange={(itemValue, itemIndex) => setGender(itemValue)}>
-            <Picker.Item color="grey" label="Jenis Kelamin" value=" - " />
-            <Picker.Item color="white" label="Laki-Laki" value="Laki-Laki" />
-            <Picker.Item color="white" label="Perempuan" value="Perempuan" />
+            <Picker.Item label="Jenis Kelamin" value="" />
+            <Picker.Item label="Laki-Laki" value="Laki-Laki" />
+            <Picker.Item label="Perempuan" value="Perempuan" />
           </Picker>
         </View>
         <View
@@ -486,7 +516,7 @@ const PostMahasiswa = ({navigation}) => {
 
             <View
               style={{
-                backgroundColor: '#5665d2',
+                backgroundColor: 'grey',
                 marginHorizontal: 10,
                 borderRadius: 10,
                 marginVertical: 10,
@@ -498,7 +528,7 @@ const PostMahasiswa = ({navigation}) => {
                 onValueChange={(itemValue, itemIndex) =>
                   setValueKelas(itemValue)
                 }>
-                <Picker.Item color="grey" label="Kelas" value=" - " />
+                <Picker.Item label="Kelas" value="" />
                 {dataKelas.map(item => (
                   <Picker.Item label={item.kelas} value={item.kelas} />
                 ))}
@@ -517,7 +547,7 @@ const PostMahasiswa = ({navigation}) => {
             </Text>
             <View
               style={{
-                backgroundColor: '#5665d2',
+                backgroundColor: 'grey',
                 marginHorizontal: 10,
                 borderRadius: 10,
                 marginVertical: 10,
@@ -527,7 +557,7 @@ const PostMahasiswa = ({navigation}) => {
                 ref={pickerRef}
                 selectedValue={value}
                 onValueChange={(itemValue, itemIndex) => setValue(itemValue)}>
-                <Picker.Item color="grey" label="Program Studi" value=" - " />
+                <Picker.Item label="Program Studi" value="" />
                 {data.map(item => (
                   <Picker.Item
                     label={item.nama_prodi}
@@ -548,9 +578,11 @@ const PostMahasiswa = ({navigation}) => {
           NIK
         </Text>
         <TextInput
+          value={valueNik}
+          keyboardType="number-pad"
           placeholderTextColor="#999999"
           placeholder={'2138977'}
-          onChangeText={value => onChangeNik(value)}
+          onChangeText={value => setValueNik(value)}
           style={styles.input}
         />
         <Text
@@ -563,9 +595,10 @@ const PostMahasiswa = ({navigation}) => {
           Email
         </Text>
         <TextInput
+          value={valueEmail}
           placeholderTextColor="#999999"
           placeholder={'alfikri@gmail.com'}
-          onChangeText={value => onChangeEmail(value)}
+          onChangeText={value => setValueEmail(value)}
           style={styles.input}
         />
 
@@ -586,14 +619,14 @@ const PostMahasiswa = ({navigation}) => {
                 marginHorizontal: 10,
                 borderRadius: 10,
                 marginVertical: 10,
-                backgroundColor: '#5665d2',
+                backgroundColor: 'grey',
               }}>
               <Picker
                 mode="dropdown"
                 ref={pickerRef}
                 selectedValue={valueProvinsi}
                 onValueChange={value => handleChangeProvinsi(value)}>
-                <Picker.Item color="grey" label="Provinsi" value=" - " />
+                <Picker.Item label="Provinsi" value="" />
                 {dataProvinsi.map(item => (
                   <Picker.Item label={item.nama} value={item.id} />
                 ))}
@@ -603,7 +636,7 @@ const PostMahasiswa = ({navigation}) => {
           <View style={{width: '50%'}}>
             <View
               style={{
-                backgroundColor: '#5665d2',
+                backgroundColor: 'grey',
                 marginHorizontal: 10,
                 borderRadius: 10,
                 marginVertical: 10,
@@ -613,7 +646,7 @@ const PostMahasiswa = ({navigation}) => {
                 ref={pickerRef}
                 selectedValue={valueKota}
                 onValueChange={value => handleChangeKota(value)}>
-                <Picker.Item color="grey" label="Kota" value=" - " />
+                <Picker.Item label="Kota" value="" />
                 {dataKota.map(item => (
                   <Picker.Item label={item.nama} value={item.id} />
                 ))}
@@ -625,7 +658,7 @@ const PostMahasiswa = ({navigation}) => {
           <View style={{width: '50%'}}>
             <View
               style={{
-                backgroundColor: '#5665d2',
+                backgroundColor: 'grey',
                 marginHorizontal: 10,
                 borderRadius: 10,
                 marginVertical: 10,
@@ -635,7 +668,7 @@ const PostMahasiswa = ({navigation}) => {
                 ref={pickerRef}
                 selectedValue={valueKecamatan}
                 onValueChange={value => handleChangeKecamatan(value)}>
-                <Picker.Item color="grey" label="Kecamatan" value=" - " />
+                <Picker.Item label="Kecamatan" value="" />
                 {dataKecamatan.map(item => (
                   <Picker.Item label={item.nama} value={item.id} />
                 ))}
@@ -644,18 +677,21 @@ const PostMahasiswa = ({navigation}) => {
           </View>
           <View style={{width: '45%', marginRight: 10}}>
             <TextInput
+              value={valueKodePos}
+              keyboardType="number-pad"
               placeholderTextColor="#999999"
               placeholder={'Kode Pos'}
               style={styles.input2}
-              onChangeText={value => onChangeKodePos(value)}
+              onChangeText={value => setValueKodePos(value)}
             />
           </View>
         </View>
         <TextInput
           placeholderTextColor="#999999"
           placeholder={'Alamat Lengkap'}
-          onChangeText={value => onChangeAlamat(value)}
+          onChangeText={value => setValueAlamat(value)}
           style={styles.input}
+          value={valueAlamat}
         />
         <Text
           style={{
@@ -667,9 +703,11 @@ const PostMahasiswa = ({navigation}) => {
           No Telepon
         </Text>
         <TextInput
+          keyboardType="number-pad"
           placeholderTextColor="#999999"
           placeholder={'08xxxxxxx'}
-          onChangeText={value => onChangeNoTelp(value)}
+          value={valueNotelp}
+          onChangeText={value => setValueNoTelp(value)}
           style={styles.input}
         />
         <Text
@@ -686,7 +724,7 @@ const PostMahasiswa = ({navigation}) => {
           <View style={{width: '50%'}}>
             <View
               style={{
-                backgroundColor: '#5665d2',
+                backgroundColor: 'grey',
                 marginHorizontal: 10,
                 borderRadius: 10,
                 marginVertical: 10,
@@ -696,7 +734,7 @@ const PostMahasiswa = ({navigation}) => {
                 ref={pickerRef}
                 selectedValue={valueProvinsiOrtu}
                 onValueChange={value => handleChangeProvinsiOrtu(value)}>
-                <Picker.Item label=" - " value=" - " />
+                <Picker.Item label="Provinsi" value="" />
                 {dataProvinsiOrtu.map(item => (
                   <Picker.Item label={item.nama} value={item.id} />
                 ))}
@@ -706,7 +744,7 @@ const PostMahasiswa = ({navigation}) => {
           <View style={{width: '50%'}}>
             <View
               style={{
-                backgroundColor: '#5665d2',
+                backgroundColor: 'grey',
                 marginHorizontal: 10,
                 borderRadius: 10,
                 marginVertical: 10,
@@ -716,7 +754,7 @@ const PostMahasiswa = ({navigation}) => {
                 ref={pickerRef}
                 selectedValue={valueKotaOrtu}
                 onValueChange={value => handleChangeKotaOrtu(value)}>
-                <Picker.Item label=" - " value=" - " />
+                <Picker.Item label="Kota" value="" />
                 {dataKotaOrtu.map(item => (
                   <Picker.Item label={item.nama} value={item.id} />
                 ))}
@@ -728,7 +766,7 @@ const PostMahasiswa = ({navigation}) => {
           <View style={{width: '50%'}}>
             <View
               style={{
-                backgroundColor: '#5665d2',
+                backgroundColor: 'grey',
                 marginHorizontal: 10,
                 borderRadius: 10,
                 marginVertical: 10,
@@ -738,7 +776,7 @@ const PostMahasiswa = ({navigation}) => {
                 ref={pickerRef}
                 selectedValue={valueKecamatanOrtu}
                 onValueChange={value => handleChangeKecamatanOrtu(value)}>
-                <Picker.Item label=" - " value=" - " />
+                <Picker.Item label="Kecamatan" value="" />
                 {dataKecamatanOrtu.map(item => (
                   <Picker.Item label={item.nama} value={item.id} />
                 ))}
@@ -747,21 +785,24 @@ const PostMahasiswa = ({navigation}) => {
           </View>
           <View style={{width: '45%', marginRight: 10}}>
             <TextInput
+              keyboardType="number-pad"
               placeholderTextColor="#999999"
               placeholder={'Kode Pos'}
               style={styles.input2}
-              onChangeText={value => onChangeKodePos(value)}
+              value={valueKodePosOrtu}
+              onChangeText={value => setValueKodePosOrtu(value)}
             />
           </View>
         </View>
         <TextInput
           placeholderTextColor="#999999"
           placeholder={'Alamat Lengkap'}
-          onChangeText={value => onChangeAlamatOrtu(value)}
+          onChangeText={value => setValueAlamatOrtu(value)}
           style={styles.input}
+          value={valueAlamatOrtu}
         />
 
-        <TouchableOpacity onPress={saveData}>
+        <TouchableOpacity onPress={validation}>
           <View
             style={{
               backgroundColor: '#5665d2',
@@ -794,7 +835,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'red',
     borderRadius: 5,
-
     color: 'red',
     fontSize: 15,
     padding: 10,

@@ -51,6 +51,19 @@ const DetailMatkul = ({route, navigation}) => {
     setMatkul({...matkul, matkul: value});
   };
 
+  const validation = () => {
+    if (matkul.kode && matkul.matkul !== '') {
+      updateData();
+    } else {
+      Alert.alert('Ada Data Yang Belum Diisi', 'Silahkan Diperbaiki', [
+        {
+          text: 'OK',
+          onPress: () => console.log('OK'),
+        },
+      ]);
+    }
+  };
+
   const updateData = () => {
     var myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -104,7 +117,7 @@ const DetailMatkul = ({route, navigation}) => {
       <TextInput
         placeholderTextColor="#999999"
         placeholder={'Kode Mata Kuliah'}
-        onChangeText={value => onChangeKode(value)}
+        onChangeText={value => onChangeKode(value.trim())}
         style={styles.input}
         value={matkul.kode}
       />
@@ -112,7 +125,7 @@ const DetailMatkul = ({route, navigation}) => {
       <TextInput
         placeholderTextColor="#999999"
         placeholder={'Mata Kuliah'}
-        onChangeText={value => onChangeMatkul(value)}
+        onChangeText={value => onChangeMatkul(value.trim())}
         style={styles.input}
         value={matkul.matkul}
       />
@@ -122,7 +135,7 @@ const DetailMatkul = ({route, navigation}) => {
           justifyContent: 'flex-end',
           marginTop: 10,
         }}>
-        <TouchableOpacity onPress={updateData} style={styles.updateButton}>
+        <TouchableOpacity onPress={validation} style={styles.updateButton}>
           <View style={{padding: 10}}>
             <Text style={{color: 'white', textAlign: 'center'}}>Perbarui</Text>
           </View>
